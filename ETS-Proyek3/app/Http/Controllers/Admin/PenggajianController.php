@@ -177,4 +177,12 @@ class PenggajianController extends Controller
 
         return response()->json($komponen);
     }
+
+    public function resetPenggajian(Anggota $anggota)
+    {
+        // detach() akan menghapus semua entri untuk anggota ini di tabel pivot 'penggajian'
+        $anggota->allKomponenGaji()->detach();
+
+        return redirect()->route('penggajian.index')->with('success', 'Semua komponen gaji untuk ' . $anggota->nama_depan . ' berhasil direset.');
+    }
 }

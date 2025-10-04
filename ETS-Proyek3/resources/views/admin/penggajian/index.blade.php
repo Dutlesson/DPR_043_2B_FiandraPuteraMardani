@@ -44,10 +44,20 @@
                                         <td class="px-6 py-4 whitespace-nowrap">{{ $anggota->jabatan }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap font-bold">Rp {{ number_format($anggota->take_home_pay, 0, ',', '.') }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            {{-- Tombol Edit --}}
-                                            <a href="{{ route('penggajian.edit', $anggota->id_anggota) }}" class="text-green-600 hover:text-green-900">Edit</a>
-                                            {{-- Tombol Detail --}}
-                                            <a href="{{ route('penggajian.show', $anggota->id_anggota) }}" class="text-blue-600 hover:text-blue-900">Detail</a>
+                                            <a href="{{ route('penggajian.show', $anggota->id_anggota) }}" class="text-blue-600 hover:text-blue-900">
+                                                Detail
+                                            </a>
+                                            <a href="{{ route('penggajian.edit', $anggota->id_anggota) }}" class="text-indigo-600 hover:text-indigo-900 ml-4">
+                                                Edit
+                                            </a>
+                                            {{-- Form untuk Tombol Hapus/Reset --}}
+                                            <form action="{{ route('penggajian.reset', $anggota->id_anggota) }}" method="POST" class="inline-block" onsubmit="return confirm('PERINGATAN: Yakin ingin mereset (menghapus SEMUA) komponen gaji dari anggota ini?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-red-600 hover:text-red-900 ml-4">
+                                                    Hapus
+                                                </button>
+                                            </form>
                                         </td>
                                     </tr>
                                 @empty

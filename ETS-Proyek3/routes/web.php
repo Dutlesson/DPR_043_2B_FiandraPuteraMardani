@@ -36,7 +36,7 @@ Route::middleware(['auth', 'role:Admin'])->prefix('admin')->group(function () {
     // Rute Komponen Gaji
     Route::resource('komponen-gaji', KomponenGajiController::class);
     
-    // Rute Penggajian (BAGIAN INI YANG DIPERBAIKI)
+    // Rute Penggajian
     Route::get('/penggajian', [PenggajianController::class, 'index'])->name('penggajian.index');
     Route::get('/penggajian/create', [PenggajianController::class, 'create'])->name('penggajian.create');
     Route::post('/penggajian', [PenggajianController::class, 'store'])->name('penggajian.store');
@@ -45,6 +45,9 @@ Route::middleware(['auth', 'role:Admin'])->prefix('admin')->group(function () {
     Route::put('/penggajian/{anggota}', [PenggajianController::class, 'update'])->name('penggajian.update');
     Route::delete('/penggajian/{anggota}/reset', [PenggajianController::class, 'resetPenggajian'])->name('penggajian.reset');
     Route::delete('/penggajian/{anggota}/{komponenGaji}', [PenggajianController::class, 'removeKomponen'])->name('penggajian.removeKomponen');
+
+    // RUTE UNTUK FITUR HAPUS/RESET
+Route::delete('/admin/penggajian/{anggota}/reset', [PenggajianController::class, 'resetPenggajian'])->name('penggajian.reset'); 
     
     // Rute untuk AJAX
     Route::get('/get-komponen-gaji/{anggota}', [PenggajianController::class, 'getKomponenGajiForAnggota'])->name('penggajian.getKomponen');
