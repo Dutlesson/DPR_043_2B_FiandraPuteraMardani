@@ -10,6 +10,9 @@
                         <a href="{{ route('public.anggota.index') }}" class="inline-block px-4 py-2 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700">
                             Lihat Daftar Anggota DPR
                         </a>
+                        <a href="{{ route('public.penggajian.index') }}" class="inline-block px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700">
+                            Lihat Data Penggajian
+                        </a>
                     </div>
                 </div>
             </div>

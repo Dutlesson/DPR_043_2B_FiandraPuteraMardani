@@ -49,7 +49,7 @@ Route::middleware(['auth', 'role:Admin'])->group(function () {
     // Rute Penggajian
     Route::resource('/admin/penggajian', PenggajianController::class)->except(['show']);
     Route::get('/admin/penggajian/{anggota}', [PenggajianController::class, 'show'])->name('penggajian.show');
-    
+
     Route::get('/admin/get-komponen-gaji/{anggota}', [PenggajianController::class, 'getKomponenGajiForAnggota'])->name('penggajian.getKomponen');
 });
 
@@ -57,6 +57,7 @@ Route::middleware(['auth', 'role:Admin'])->group(function () {
 Route::middleware(['auth', 'role:Public'])->group(function () {
     Route::get('/public', [PublicController::class, 'index'])->name('public.dashboard');
     Route::get('/public/anggota', [PublicController::class, 'showAnggota'])->name('public.anggota.index');
+    Route::get('/public/penggajian', [PublicController::class, 'showPenggajian'])->name('public.penggajian.index');
 });
 
 require __DIR__.'/auth.php';
