@@ -111,8 +111,35 @@ class PenggajianController extends Controller
      */
     public function show(Anggota $anggota)
     {
-        // Akan kita buat di langkah selanjutnya
-        return "Halaman detail untuk anggota: " . $anggota->nama_depan;
+        // Memuat relasi komponen gaji untuk efisiensi query
+        $anggota->load('allKomponenGaji');
+
+        // Mengambil semua komponen yang satuannya per bulan
+        $komponenBulanan = $anggota->allKomponenGaji->where('satuan', 'Bulan');
+        
+        // Memisahkan komponen dasar dari tunjangan keluarga
+        $baseComponents = $komponenBulanan->whereNotIn('nama_komponen', ['Tunjangan Istri/Suami', 'Tunjangan Anak']);
+        $tunjanganIstri = $komponenBulanan->firstWhere('nama_komponen', 'Tunjangan Istri/Suami');
+        $tunjanganAnak = $komponenBulanan->firstWhere('nama_komponen', 'Tunjangan Anak');
+
+        // Menghitung total dari komponen dasar
+        $total = $baseComponents->sum('nominal');
+
+        // Menambahkan tunjangan istri jika statusnya kawin dan komponennya ada
+        if ($anggota->status_pernikahan == 'Kawin' && $tunjanganIstri) {
+            $total += $tunjanganIstri->nominal;
+        }
+
+        // Menambahkan tunjangan anak (maksimal 2) jika punya anak dan komponennya ada
+        if ($anggota->jumlah_anak > 0 && $tunjanganAnak) {
+            $jumlahAnakDihitung = min($anggota->jumlah_anak, 2); // Ambil nilai terkecil antara jumlah anak dan 2
+            $total += ($tunjanganAnak->nominal * $jumlahAnakDihitung);
+        }
+        
+        $take_home_pay = $total;
+
+        // Mengirim data anggota dan total THP ke view
+        return view('admin.penggajian.show', compact('anggota', 'take_home_pay'));
     }
 
     /**
