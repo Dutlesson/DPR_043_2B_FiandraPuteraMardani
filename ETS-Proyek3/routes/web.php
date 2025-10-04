@@ -7,6 +7,7 @@ use App\Http\Controllers\PublicController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\AnggotaController;
 use App\Http\Controllers\Admin\KomponenGajiController;
+use App\Http\Controllers\Admin\PenggajianController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -45,6 +46,11 @@ Route::middleware(['auth', 'role:Admin'])->group(function () {
     Route::get('/admin/komponen-gaji/{komponenGaji}/edit', [KomponenGajiController::class, 'edit'])->name('komponen-gaji.edit');
     Route::put('/admin/komponen-gaji/{komponenGaji}', [KomponenGajiController::class, 'update'])->name('komponen-gaji.update');
     Route::delete('/admin/komponen-gaji/{komponenGaji}', [KomponenGajiController::class, 'destroy'])->name('komponen-gaji.destroy');
+    // Rute Penggajian
+    Route::resource('/admin/penggajian', PenggajianController::class)->except(['show']);
+    Route::get('/admin/penggajian/{anggota}', [PenggajianController::class, 'show'])->name('penggajian.show');
+    
+    Route::get('/admin/get-komponen-gaji/{anggota}', [PenggajianController::class, 'getKomponenGajiForAnggota'])->name('penggajian.getKomponen');
 });
 
 // Grup untuk semua rute Public

@@ -11,16 +11,20 @@
                 <div class="p-6 text-gray-900">
                     <h1 class="text-2xl font-bold">Selamat Datang, {{ Auth::user()->nama_depan }}!</h1>
                     <p class="mt-2">Ini adalah dashboard untuk role Admin.</p>
-                    
-                    {{-- Tombol Navigasi Utama Admin --}}
+
+                    {{-- INI TOMBOL Kelola Anggota --}}
                     <div class="mt-6">
                         <a href="{{ route('anggota.index') }}" class="inline-block px-4 py-2 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700">
                             Kelola Anggota DPR
                         </a>
                         
-                        {{-- INI TOMBOL YANG DITAMBAHKAN --}}
+                        {{-- INI TOMBOL Kelola Komponen Gaji --}}
                         <a href="{{ route('komponen-gaji.index') }}" class="inline-block px-4 py-2 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700">
                             Kelola Komponen Gaji
+                        </a>
+                        {{-- INI TOMBOL Kelola Penggajian --}}
+                        <a href="{{ route('penggajian.index') }}" class="inline-block px-4 py-2 bg-purple-600 text-white font-semibold rounded-lg shadow-md hover:bg-purple-700">
+                            Kelola Penggajian
                         </a>
                     </div>
                 </div>

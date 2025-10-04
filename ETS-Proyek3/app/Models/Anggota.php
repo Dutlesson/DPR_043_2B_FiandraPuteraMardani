@@ -9,13 +9,9 @@ class Anggota extends Model
 {
     use HasFactory;
 
-    // Menentukan nama tabel secara eksplisit
     protected $table = 'anggota';
-
-    // Menentukan primary key
     protected $primaryKey = 'id_anggota';
 
-    // Kolom yang boleh diisi
     protected $fillable = [
         'nama_depan',
         'nama_belakang',
@@ -26,6 +22,14 @@ class Anggota extends Model
         'jumlah_anak',
     ];
 
-    // Menonaktifkan timestamps (created_at, updated_at) jika tidak ada di tabel
     public $timestamps = false;
+
+    /**
+     * Mendefinisikan relasi many-to-many ke KomponenGaji
+     * melalui tabel 'penggajian'.
+     */
+    public function allKomponenGaji()
+    {
+        return $this->belongsToMany(KomponenGaji::class, 'penggajian', 'id_anggota', 'id_komponen_gaji');
+    }
 }
