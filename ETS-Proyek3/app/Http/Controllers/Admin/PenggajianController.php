@@ -119,19 +119,38 @@ class PenggajianController extends Controller
      * Show the form for editing the specified resource.
      * (Untuk penggajian, kita tidak edit, tapi hapus komponen satu per satu di halaman detail)
      */
-    public function edit(string $id)
+    public function edit(Anggota $anggota)
     {
-        // Method ini tidak kita gunakan, karena manajemen komponen ada di halaman 'show'
-        abort(404);
+        // 1. Ambil semua jenis komponen gaji yang ada di sistem
+        $semuaKomponen = KomponenGaji::orderBy('nama_komponen')->get();
+        
+        // 2. Ambil ID dari komponen yang sudah dimiliki anggota ini
+        $komponenDimiliki = $anggota->allKomponenGaji()->pluck('komponen_gaji.id_komponen_gaji')->toArray();
+
+        // 3. Kirim semua data ke view 'edit'
+        return view('admin.penggajian.edit', compact('anggota', 'semuaKomponen', 'komponenDimiliki'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Anggota $anggota)
     {
-        // Method ini tidak kita gunakan
-        abort(404);
+        // 1. Validasi input (opsional tapi sangat direkomendasikan)
+        $request->validate([
+            'komponen_ids' => 'nullable|array', // Pastikan komponen_ids adalah array jika ada
+            'komponen_ids.*' => 'exists:komponen_gaji,id_komponen_gaji', // Pastikan setiap ID valid
+        ]);
+
+        // 2. Ambil semua ID komponen yang dicentang dari form
+        //    Jika tidak ada yang dicentang, akan menjadi array kosong []
+        $selectedKomponenIds = $request->input('komponen_ids', []);
+
+        // 3. Gunakan sync() untuk melakukan sinkronisasi
+        $anggota->allKomponenGaji()->sync($selectedKomponenIds);
+
+        // 4. Redirect dengan pesan sukses
+        return redirect()->route('penggajian.index')->with('success', 'Data penggajian untuk ' . $anggota->nama_depan . ' berhasil diperbarui.');
     }
 
     /**

@@ -13,51 +13,48 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/redirect', function () {
+    if (Auth::user()->role === 'Admin') {
+        return redirect()->route('admin.dashboard');
+    }
+    return redirect()->route('public.dashboard');
+})->middleware('auth');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/redirect', function () {
-    if (Auth::user()->role === 'Admin') {
-        return redirect()->route('admin.dashboard'); // Lebih baik redirect ke nama rute
-    }
-    return redirect()->route('public.dashboard'); // Lebih baik redirect ke nama rute
-})->middleware('auth');
-
-// Grup untuk semua rute Admin
-Route::middleware(['auth', 'role:Admin'])->group(function () {
-    Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
+// === GRUP RUTE ADMIN ===
+Route::middleware(['auth', 'role:Admin'])->prefix('admin')->group(function () {
+    Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');
     
     // Rute Anggota
-    Route::get('/admin/anggota', [AnggotaController::class, 'index'])->name('anggota.index');
-    Route::get('/admin/anggota/create', [AnggotaController::class, 'create'])->name('anggota.create');
-    Route::post('/admin/anggota', [AnggotaController::class, 'store'])->name('anggota.store');
-    Route::get('/admin/anggota/{anggota}/edit', [AnggotaController::class, 'edit'])->name('anggota.edit');
-    Route::put('/admin/anggota/{anggota}', [AnggotaController::class, 'update'])->name('anggota.update');
-    Route::delete('/admin/anggota/{anggota}', [AnggotaController::class, 'destroy'])->name('anggota.destroy');
+    Route::resource('anggota', AnggotaController::class);
 
     // Rute Komponen Gaji
-    Route::get('/admin/komponen-gaji', [KomponenGajiController::class, 'index'])->name('komponen-gaji.index');
-    Route::get('/admin/komponen-gaji/create', [KomponenGajiController::class, 'create'])->name('komponen-gaji.create');
-    Route::post('/admin/komponen-gaji', [KomponenGajiController::class, 'store'])->name('komponen-gaji.store');
-    // tambahkan edit, update, destroy
-    Route::get('/admin/komponen-gaji/{komponenGaji}/edit', [KomponenGajiController::class, 'edit'])->name('komponen-gaji.edit');
-    Route::put('/admin/komponen-gaji/{komponenGaji}', [KomponenGajiController::class, 'update'])->name('komponen-gaji.update');
-    Route::delete('/admin/komponen-gaji/{komponenGaji}', [KomponenGajiController::class, 'destroy'])->name('komponen-gaji.destroy');
-    // Rute Penggajian
-    Route::resource('/admin/penggajian', PenggajianController::class)->except(['show']);
-    Route::get('/admin/penggajian/{anggota}', [PenggajianController::class, 'show'])->name('penggajian.show');
-
-    Route::get('/admin/get-komponen-gaji/{anggota}', [PenggajianController::class, 'getKomponenGajiForAnggota'])->name('penggajian.getKomponen');
+    Route::resource('komponen-gaji', KomponenGajiController::class);
+    
+    // Rute Penggajian (BAGIAN INI YANG DIPERBAIKI)
+    Route::get('/penggajian', [PenggajianController::class, 'index'])->name('penggajian.index');
+    Route::get('/penggajian/create', [PenggajianController::class, 'create'])->name('penggajian.create');
+    Route::post('/penggajian', [PenggajianController::class, 'store'])->name('penggajian.store');
+    Route::get('/penggajian/{anggota}', [PenggajianController::class, 'show'])->name('penggajian.show');
+    Route::get('/penggajian/{anggota}/edit', [PenggajianController::class, 'edit'])->name('penggajian.edit');
+    Route::put('/penggajian/{anggota}', [PenggajianController::class, 'update'])->name('penggajian.update');
+    Route::delete('/penggajian/{anggota}/reset', [PenggajianController::class, 'resetPenggajian'])->name('penggajian.reset');
+    Route::delete('/penggajian/{anggota}/{komponenGaji}', [PenggajianController::class, 'removeKomponen'])->name('penggajian.removeKomponen');
+    
+    // Rute untuk AJAX
+    Route::get('/get-komponen-gaji/{anggota}', [PenggajianController::class, 'getKomponenGajiForAnggota'])->name('penggajian.getKomponen');
 });
 
-// Grup untuk semua rute Public
-Route::middleware(['auth', 'role:Public'])->group(function () {
-    Route::get('/public', [PublicController::class, 'index'])->name('public.dashboard');
-    Route::get('/public/anggota', [PublicController::class, 'showAnggota'])->name('public.anggota.index');
-    Route::get('/public/penggajian', [PublicController::class, 'showPenggajian'])->name('public.penggajian.index');
+// === GRUP RUTE PUBLIC ===
+Route::middleware(['auth', 'role:Public'])->prefix('public')->group(function () {
+    Route::get('/', [PublicController::class, 'index'])->name('public.dashboard');
+    Route::get('/anggota', [PublicController::class, 'showAnggota'])->name('public.anggota.index');
+    Route::get('/penggajian', [PublicController::class, 'showPenggajian'])->name('public.penggajian.index');
 });
 
 require __DIR__.'/auth.php';

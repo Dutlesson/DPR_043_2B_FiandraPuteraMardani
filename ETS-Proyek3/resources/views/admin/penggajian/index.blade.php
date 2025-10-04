@@ -44,6 +44,9 @@
                                         <td class="px-6 py-4 whitespace-nowrap">{{ $anggota->jabatan }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap font-bold">Rp {{ number_format($anggota->take_home_pay, 0, ',', '.') }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            {{-- Tombol Edit --}}
+                                            <a href="{{ route('penggajian.edit', $anggota->id_anggota) }}" class="text-green-600 hover:text-green-900">Edit</a>
+                                            {{-- Tombol Detail --}}
                                             <a href="{{ route('penggajian.show', $anggota->id_anggota) }}" class="text-blue-600 hover:text-blue-900">Detail</a>
                                         </td>
                                     </tr>
