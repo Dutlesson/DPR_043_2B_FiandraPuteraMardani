@@ -11,10 +11,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -23,23 +19,28 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/redirect', function () {
     if (Auth::user()->role === 'Admin') {
-        return redirect('/admin');
+        return redirect()->route('admin.dashboard'); // Lebih baik redirect ke nama rute
     }
-    return redirect('/public');
+    return redirect()->route('public.dashboard'); // Lebih baik redirect ke nama rute
 })->middleware('auth');
 
+// Grup untuk semua rute Admin
 Route::middleware(['auth', 'role:Admin'])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
     
-    
+    // Rute Anggota
     Route::get('/admin/anggota', [AnggotaController::class, 'index'])->name('anggota.index');
     Route::get('/admin/anggota/create', [AnggotaController::class, 'create'])->name('anggota.create');
     Route::post('/admin/anggota', [AnggotaController::class, 'store'])->name('anggota.store');
-
-    // ... (rute admin lainnya nanti bisa ditambahkan di sini)  
+    Route::get('/admin/anggota/{anggota}/edit', [AnggotaController::class, 'edit'])->name('anggota.edit');
+    Route::put('/admin/anggota/{anggota}', [AnggotaController::class, 'update'])->name('anggota.update');
+    Route::delete('/admin/anggota/{anggota}', [AnggotaController::class, 'destroy'])->name('anggota.destroy');
 });
 
-Route::middleware(['auth', 'role:Admin'])->get('/admin', [AdminController::class, 'index']);
-Route::middleware(['auth', 'role:Public'])->get('/public', [PublicController::class, 'index']);
+// Grup untuk semua rute Public
+Route::middleware(['auth', 'role:Public'])->group(function () {
+    Route::get('/public', [PublicController::class, 'index'])->name('public.dashboard');
+    Route::get('/public/anggota', [PublicController::class, 'showAnggota'])->name('public.anggota.index');
+});
 
 require __DIR__.'/auth.php';
