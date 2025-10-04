@@ -54,9 +54,16 @@
                                         <td class="px-6 py-4">Rp {{ number_format($komponen->nominal, 2, ',', '.') }}</td>
                                         <td class="px-6 py-4">{{ $komponen->satuan }}</td>
                                         <td class="px-6 py-4 text-right text-sm font-medium">
-                                            {{-- Akan diisi di langkah selanjutnya --}}
-                                            <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit</a>
-                                            <a href="#" class="text-red-600 hover:text-red-900 ml-4">Hapus</a>
+                                            {{-- Tombol Edit --}}
+                                            <a href="{{ route('komponen-gaji.edit', $komponen->id_komponen_gaji) }}" class="text-indigo-600 hover:text-indigo-900">Edit</a>
+                                            {{-- Tombol Hapus --}}
+                                            <form action="{{ route('komponen-gaji.destroy', $komponen->id_komponen_gaji) }}" method="POST" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus komponen ini?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-red-600 hover:text-red-900 ml-4">
+                                                    Hapus
+                                                </button>
+                                            </form>
                                         </td>
                                     </tr>
                                 @empty

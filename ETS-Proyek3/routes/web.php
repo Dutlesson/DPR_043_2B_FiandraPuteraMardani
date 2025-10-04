@@ -42,6 +42,9 @@ Route::middleware(['auth', 'role:Admin'])->group(function () {
     Route::get('/admin/komponen-gaji/create', [KomponenGajiController::class, 'create'])->name('komponen-gaji.create');
     Route::post('/admin/komponen-gaji', [KomponenGajiController::class, 'store'])->name('komponen-gaji.store');
     // tambahkan edit, update, destroy
+    Route::get('/admin/komponen-gaji/{komponenGaji}/edit', [KomponenGajiController::class, 'edit'])->name('komponen-gaji.edit');
+    Route::put('/admin/komponen-gaji/{komponenGaji}', [KomponenGajiController::class, 'update'])->name('komponen-gaji.update');
+    Route::delete('/admin/komponen-gaji/{komponenGaji}', [KomponenGajiController::class, 'destroy'])->name('komponen-gaji.destroy');
 });
 
 // Grup untuk semua rute Public

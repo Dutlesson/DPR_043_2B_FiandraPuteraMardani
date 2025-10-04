@@ -69,24 +69,32 @@ class KomponenGajiController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(KomponenGaji $komponenGaji)
     {
-        //
+        return view('admin.komponen-gaji.edit', compact('komponenGaji'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, KomponenGaji $komponenGaji)
     {
-        //
+        $validated = $request->validate([
+            'nama_komponen' => 'required|string|max:100',
+            'kategori' => 'required|in:Gaji Pokok,Tunjangan Melekat,Tunjangan Lain',
+            'jabatan' => 'required|in:Semua,Ketua,Wakil Ketua,Anggota',
+            'nominal' => 'required|numeric|min:0',
+            'satuan' => 'required|in:Bulan,Hari,Periode',
+        ]);
+
+        $komponenGaji->update($validated);
+
+        return redirect()->route('komponen-gaji.index')->with('success', 'Komponen gaji berhasil diperbarui!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(KomponenGaji $komponenGaji)
     {
-        //
+        $komponenGaji->delete();
+        return redirect()->route('komponen-gaji.index')->with('success', 'Komponen gaji berhasil dihapus!');
     }
 }
