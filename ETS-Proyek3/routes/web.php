@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PublicController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\AnggotaController;
+use App\Http\Controllers\Admin\KomponenGajiController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -35,6 +36,12 @@ Route::middleware(['auth', 'role:Admin'])->group(function () {
     Route::get('/admin/anggota/{anggota}/edit', [AnggotaController::class, 'edit'])->name('anggota.edit');
     Route::put('/admin/anggota/{anggota}', [AnggotaController::class, 'update'])->name('anggota.update');
     Route::delete('/admin/anggota/{anggota}', [AnggotaController::class, 'destroy'])->name('anggota.destroy');
+
+    // Rute Komponen Gaji
+    Route::get('/admin/komponen-gaji', [KomponenGajiController::class, 'index'])->name('komponen-gaji.index');
+    Route::get('/admin/komponen-gaji/create', [KomponenGajiController::class, 'create'])->name('komponen-gaji.create');
+    Route::post('/admin/komponen-gaji', [KomponenGajiController::class, 'store'])->name('komponen-gaji.store');
+    // tambahkan edit, update, destroy
 });
 
 // Grup untuk semua rute Public
